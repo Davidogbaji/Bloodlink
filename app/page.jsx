@@ -51,7 +51,7 @@ export default function PublicBoard() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-16">
       
       {/* 1. CLEAN WHITE BRANDING TOP HEADER BANNER */}
-      <nav className="bg-white text-slate-900 sticky top-0 z-50 shadow-sm border-b hairline">
+      <nav className="bg-white text-slate-900 sticky top-0 z-50 shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="text-2xl font-black tracking-tighter text-[#D61C38]">🩸 BLOODLINK</span>
@@ -127,9 +127,9 @@ export default function PublicBoard() {
                 Donor Registration &rarr;
               </Link>
               
-              {/* Premium Expanded State Selector Card Component */}
+              {/* State Selector Component */}
               <div className="flex items-center gap-3 bg-slate-100 border border-slate-200 p-2 rounded-lg shadow-inner">
-                <span className="text-xs font-mono font-black tracking-widest text-slate-500 pl-2 uppercase">JURISDICTION:</span>
+                <span className="text-xs font-mono font-black tracking-widest text-slate-500 pl-2 uppercase">STATE:</span>
                 <select
                   value={state}
                   onChange={(e) => setState(e.target.value)}
@@ -159,14 +159,20 @@ export default function PublicBoard() {
         </header>
 
         {loading && (
-          <p className="text-muted font-mono text-xs animate-pulse">Synchronizing live storage array...</p>
+          <p className="text-slate-500 font-mono text-xs animate-pulse">Synchronizing live storage array...</p>
         )}
 
-        {/* 3. ORIGINAL AGGREGATED STOCK TILES METRICS SECTION (MAINTAINING THE OLD DESIGN CLASS SETS) */}
-        <section className="space-y-4">
-          <h3 className="font-mono text-xs text-muted uppercase tracking-widest">
-            Regional Stock Aggregation
-          </h3>
+        {/* 3. PREMIUM MIDNIGHT DARK STOCK TILES SECTION (MATCHING YOUR FIRST SCREENSHOT PALETTE) */}
+        <section className="bg-[#050b14] border border-[#112240] p-6 md:p-8 rounded-2xl space-y-6 shadow-xl">
+          <div className="flex items-center justify-between border-b border-[#112240] pb-4">
+            <h2 className="text-xs font-mono font-black tracking-widest uppercase text-slate-400">
+              Live Central Stock Aggregation
+            </h2>
+            <span className="text-[10px] font-mono bg-[#112240] text-slate-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+              Universal Priority Standard
+            </span>
+          </div>
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[...BLOOD_TYPES].sort((a, b) => (a === "O-" ? -1 : b === "O-" ? 1 : 0)).map((type) => {
               const entry = byType[type];
@@ -176,25 +182,31 @@ export default function PublicBoard() {
               return (
                 <div
                   key={type}
-                  className={`card p-5 flex flex-col gap-3 transition-all ${
-                    isEmpty ? "border-blood" : critical && entry.units > 0 ? "border-warn" : ""
+                  className={`bg-[#0a1128] border p-5 rounded-xl flex flex-col gap-3 transition-all duration-200 hover:border-slate-500 shadow-md ${
+                    isEmpty ? "border-[#D61C38]" : critical && entry.units > 0 ? "border-amber-500" : "border-[#112240]"
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-display text-2xl text-ink">{type}</span>
+                    <span className="text-2xl font-black text-white tracking-tight">{type}</span>
                     {isEmpty ? (
-                      <span className="text-[9px] font-mono bg-blood/10 text-blood px-1.5 py-0.5 rounded uppercase font-bold">Depleted</span>
+                      <span className="text-[9px] font-mono bg-red-900/40 text-red-400 border border-red-800/60 px-2 py-0.5 rounded uppercase font-bold tracking-wide">
+                        Depleted
+                      </span>
                     ) : critical ? (
-                      <span className="text-[9px] font-mono bg-warn/10 text-warn px-1.5 py-0.5 rounded uppercase font-bold">Critical</span>
+                      <span className="text-[9px] font-mono bg-amber-950/40 text-amber-400 border border-amber-800/60 px-2 py-0.5 rounded uppercase font-bold tracking-wide">
+                        Critical
+                      </span>
                     ) : (
-                      <span className="text-[9px] font-mono bg-safe/10 text-safe px-1.5 py-0.5 rounded uppercase font-bold">Stable</span>
+                      <span className="text-[9px] font-mono bg-emerald-950/40 text-emerald-400 border border-emerald-800/60 px-2 py-0.5 rounded uppercase font-bold tracking-wide">
+                        Stable
+                      </span>
                     )}
                   </div>
-                  <div>
-                    <span className="font-mono text-3xl font-semibold text-ink">{entry.units}</span>
-                    <span className="text-muted text-xs ml-1 font-mono">units</span>
+                  <div className="mt-2">
+                    <span className="font-mono text-4xl font-black text-white">{entry.units}</span>
+                    <span className="text-slate-500 text-xs ml-1 font-mono font-bold tracking-wider">UNITS</span>
                   </div>
-                  <div className="flex gap-1 flex-wrap">
+                  <div className="flex gap-1.5 flex-wrap mt-2 pt-3 border-t border-[#112240]">
                     {entry.batches.slice(0, 4).map((b) => (
                       <ExpiryRing key={b.id} expiryDate={b.batch_expiry_date} size={28} />
                     ))}
@@ -205,37 +217,41 @@ export default function PublicBoard() {
           </div>
         </section>
 
-        {/* 4. HOSPITAL DIRECTORY LIST SECTION (MAINTAINING THE OLD DESIGN CLASS SETS) */}
-        <section className="space-y-4">
-          <h3 className="font-display text-lg text-ink uppercase tracking-wide">
-            Hospitals in {state}
-          </h3>
+        {/* 4. HOSPITAL DIRECTORY LIST SECTION (MATCHING MIDNIGHT DARK PALETTE) */}
+        <section className="bg-[#050b14] border border-[#112240] p-6 md:p-8 rounded-2xl space-y-6 shadow-xl">
+          <h2 className="text-lg font-black text-white uppercase tracking-tight flex items-center gap-2 border-b border-[#112240] pb-4">
+            <span>🏥</span> Verified Regional Storage Nodes ({hospitals.length})
+          </h2>
+          
           <div className="space-y-3">
             {hospitals.map((h) => {
               const hInventory = inventory.filter((i) => i.hospital_id === h.id);
               const total = hInventory.reduce((sum, i) => sum + i.units_available, 0);
               return (
-                <div key={h.id} className="card p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                  <div>
-                    <p className="text-ink font-medium">{h.name}</p>
-                    <p className="text-muted text-sm">📍 {h.address}</p>
+                <div key={h.id} className="bg-[#0a1128] border border-[#112240] p-5 rounded-xl flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:border-[#233554] transition">
+                  <div className="space-y-1">
+                    <p className="text-white font-black text-lg tracking-tight">{h.name}</p>
+                    <p className="text-slate-400 text-sm font-medium">📍 {h.address}</p>
                   </div>
-                  <div className="flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-2 md:pt-0 border-ink/5">
-                    <span className="font-mono text-xs text-muted">{total} units total</span>
+                  <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-[#112240]">
+                    <div className="text-left md:text-right font-mono">
+                      <span className="text-xl font-black text-white">{total}</span>
+                      <span className="text-slate-500 text-xs font-bold ml-1">TOTAL</span>
+                    </div>
                     <div className="flex gap-2">
                       <a
                         href={whatsAppLink(h.emergency_phone, `Emergency blood inquiry via BloodLink for ${h.name}.`)}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs font-mono px-3 py-1.5 rounded border border-safe text-safe hover:bg-safe/10 transition"
+                        className="text-xs font-mono font-bold px-4 py-2 rounded border border-emerald-500 text-emerald-400 hover:bg-emerald-500/10 transition uppercase tracking-wide"
                       >
                         WhatsApp
                       </a>
                       <a
                         href={`tel:${h.emergency_phone}`}
-                        className="text-xs font-mono px-3 py-1.5 rounded border border-blood text-blood hover:bg-blood/10 transition"
+                        className="text-xs font-mono font-bold px-4 py-2 rounded bg-[#D61C38] text-white hover:bg-[#b8142c] transition uppercase tracking-wide"
                       >
-                        Call
+                        Call Node
                       </a>
                     </div>
                   </div>
@@ -243,7 +259,9 @@ export default function PublicBoard() {
               );
             })}
             {!loading && hospitals.length === 0 && (
-              <p className="text-muted text-sm font-mono">No registered facilities in this state node yet.</p>
+              <p className="text-slate-400 text-center py-8 font-mono text-sm">
+                ⚠️ No registered facilities inside this state grid block yet.
+              </p>
             )}
           </div>
         </section>
