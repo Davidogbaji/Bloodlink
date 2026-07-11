@@ -47,185 +47,180 @@ export default function PublicBoard() {
     return map;
   }, [inventory]);
 
-  const hospitalById = useMemo(
-    () => Object.fromEntries(hospitals.map((h) => [h.id, h])),
-    [hospitals]
-  );
-
   return (
-    <main className="min-h-screen px-4 py-8 md:px-8 md:py-12 max-w-6xl mx-auto space-y-10 selection:bg-blood/20">
+    <div className="min-h-screen pb-16">
       
-      {/* Top Professional Header Bar */}
-      <div className="flex justify-between items-center border-b hairline pb-4">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-safe animate-pulse" />
-          <p className="font-mono text-xs tracking-widest text-muted uppercase">
-            Live Network Status &middot; Operational
-          </p>
+      {/* 1. TOP HEADER BANNER - NAV BAR FORMAT */}
+      <nav className="bg-surface border-b hairline sticky top-0 z-50 shadow-sm backdrop-blur-md bg-opacity-95">
+        <div className="max-w-6xl mx-auto px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <h1 className="font-display text-xl font-bold tracking-tight text-ink">
+              BLOODLINK <span className="text-blood">COLDCHAIN</span>
+            </h1>
+          </div>
+          
+          <div className="flex items-center gap-6 font-mono text-xs">
+            <Link href="/" className="text-ink font-bold pb-1 border-b border-blood">
+              Dashboard
+            </Link>
+            <Link href="/dashboard" className="text-muted hover:text-ink transition">
+              Staff Portal
+            </Link>
+            <Link href="/donors" className="text-muted hover:text-ink transition">
+              Donor Registry
+            </Link>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Link 
-            href="/dashboard" 
-            className="text-xs font-mono font-medium px-4 py-2 rounded-md bg-surface border border-ink/10 hover:border-ink/30 text-ink shadow-sm hover:shadow transition-all duration-200"
-          >
-            Hospital Staff Portal →
-          </Link>
-          <Link 
-            href="/donors" 
-            className="text-xs font-mono font-medium px-4 py-2 rounded-md bg-blood/10 hover:bg-blood/20 text-blood border border-blood/20 transition-all duration-200"
-          >
-            Become a Donor ♥
-          </Link>
-        </div>
-      </div>
+      </nav>
 
-      {/* Hero Branding Section */}
-      <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pt-2">
-        <div className="space-y-3">
-          <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight text-ink">
-            BLOODLINK <span className="text-blood bg-blood/5 px-2.5 py-0.5 rounded-lg border border-blood/10">COLDCHAIN</span>
-          </h1>
-          <p className="text-muted text-base max-w-xl leading-relaxed">
-            Real-time blood availability across <span className="text-ink font-semibold">{state} State</span> health providers. Built for the critical seconds that matter when a patient cannot wait.
-          </p>
-        </div>
+      {/* MAIN LAYOUT WRAPPER */}
+      <div className="max-w-6xl mx-auto px-5 mt-8 space-y-12">
         
-        {/* State Filter Card */}
-        <div className="bg-surface/60 backdrop-blur-md border hairline p-4 rounded-xl flex flex-col gap-2 min-w-[260px] shadow-sm">
-          <label className="text-xs uppercase tracking-wider text-muted font-mono font-bold">Monitor Jurisdiction</label>
-          <select
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            className="bg-surface border border-ink/10 hover:border-ink/20 focus:border-blood rounded-lg px-3 py-2.5 text-ink font-body font-medium transition cursor-pointer outline-none shadow-inner"
-          >
-            {NIGERIAN_STATES.map((s) => (
-              <option key={s} value={s}>{s} State</option>
-            ))}
-          </select>
-        </div>
-      </header>
-
-      {loading && (
-        <div className="flex items-center gap-2 text-muted font-mono text-xs bg-surface border hairline px-3 py-2 rounded-md w-fit animate-pulse">
-          <span>🔄</span> Synchronizing real-time databases...
-        </div>
-      )}
-
-      {/* Blood Type Analytic Metrics Grid */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-mono text-xs text-muted uppercase tracking-widest font-bold">Aggregated Inventory Allocation</h2>
-          <span className="text-xs text-muted font-mono bg-surface border hairline px-2 py-0.5 rounded">Sorted by Universal Utility</span>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[...BLOOD_TYPES].sort((a, b) => (a === "O-" ? -1 : b === "O-" ? 1 : 0)).map((type) => {
-            const entry = byType[type];
-            const critical = entry.units <= 2;
-            const isEmpty = entry.units === 0;
+        {/* 2. HERO SPLIT SECTION (MATCHING FORMAT FRAMEWORK) */}
+        <header className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center card p-6 md:p-10 rounded-2xl">
+          
+          {/* LEFT CONTENT COLUMN */}
+          <div className="lg:col-span-7 space-y-5">
+            <p className="font-mono text-xs tracking-widest text-blood uppercase">
+              Live &middot; No login required
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight text-ink leading-tight">
+              DONATE BLOOD!!!
+            </h2>
+            <div className="space-y-3 text-muted max-w-xl">
+              <p className="text-ink font-medium">
+                Real-time blood availability across {state} hospitals.
+              </p>
+              <p className="text-sm leading-relaxed">
+                We have so many great heroes who help us in contributing towards the betterment of our health delivery systems. Built for the seconds that matter when a patient can't wait for a phone chain.
+              </p>
+            </div>
             
-            return (
-              <div
-                key={type}
-                className={`card p-5 rounded-2xl flex flex-col justify-between min-h-[140px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${
-                  isEmpty ? "bg-blood/[0.02] border border-blood/40 shadow-sm" : critical ? "bg-warn/[0.01] border border-warn/40" : "hover:border-ink/20"
-                }`}
+            {/* Inline Action Row */}
+            <div className="pt-2 flex flex-wrap gap-4 items-center">
+              <Link 
+                href="/donors" 
+                className="inline-flex items-center justify-center font-mono text-xs font-bold px-6 py-3 bg-blood hover:bg-blood/90 text-white rounded-full shadow-lg transition transform active:scale-95"
               >
-                <div className="flex items-start justify-between">
-                  <span className="font-display text-3xl font-bold text-ink tracking-tight">{type}</span>
-                  {isEmpty ? (
-                    <span className="text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-blood/10 text-blood animate-pulse">
-                      DEPLETED
-                    </span>
-                  ) : critical ? (
-                    <span className="text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-warn/10 text-warn">
-                      CRITICAL
-                    </span>
-                  ) : (
-                    <span className="text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-safe/10 text-safe">
-                      STABLE
-                    </span>
-                  )}
-                </div>
-                
-                <div className="flex items-end justify-between mt-4">
-                  <div>
-                    <span className="font-mono text-4xl font-black text-ink tracking-tighter">{entry.units}</span>
-                    <span className="text-muted font-mono text-xs ml-1 font-bold">UNITS</span>
+                Donor Registration →
+              </Link>
+              
+              {/* State drop selector card layout wrapper */}
+              <div className="flex items-center gap-2 bg-surface border hairline px-3 py-1.5 rounded-full">
+                <span className="text-[10px] font-mono text-muted uppercase tracking-wider pl-1">State:</span>
+                <select
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="bg-transparent text-ink font-body text-xs font-bold cursor-pointer outline-none"
+                >
+                  {NIGERIAN_STATES.map((s) => (
+                    <option key={s} value={s} className="bg-surface text-ink">{s}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT GRAPHIC / ANALYTIC CARD */}
+          <div className="lg:col-span-5 bg-surface/40 rounded-xl border border-dashed border-ink/10 p-6 flex flex-col items-center justify-center text-center min-h-[220px]">
+            <span className="text-4xl mb-3 animate-pulse">❤️</span>
+            <p className="text-ink font-mono text-sm font-semibold">Coldchain Tracking Monitor</p>
+            <p className="text-xs text-muted font-mono mt-1">
+              Active tracking metrics across {hospitals.length} localized network banks.
+            </p>
+          </div>
+          
+        </header>
+
+        {loading && <p className="text-muted font-mono text-xs animate-pulse">Synchronizing live storage array...</p>}
+
+        {/* 3. BLOOD TYPE METRIC STOCK TILES */}
+        <section className="space-y-4">
+          <h3 className="font-mono text-xs text-muted uppercase tracking-widest">
+            Regional Stock Aggregation
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[...BLOOD_TYPES].sort((a, b) => (a === "O-" ? -1 : b === "O-" ? 1 : 0)).map((type) => {
+              const entry = byType[type];
+              const critical = entry.units <= 2;
+              const isEmpty = entry.units === 0;
+
+              return (
+                <div
+                  key={type}
+                  className={`card p-5 flex flex-col gap-3 transition-all ${
+                    isEmpty ? "border-blood" : critical && entry.units > 0 ? "border-warn" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-display text-2xl text-ink">{type}</span>
+                    {isEmpty ? (
+                      <span className="text-[9px] font-mono bg-blood/10 text-blood px-1.5 py-0.5 rounded uppercase font-bold">Depleted</span>
+                    ) : critical ? (
+                      <span className="text-[9px] font-mono bg-warn/10 text-warn px-1.5 py-0.5 rounded uppercase font-bold">Critical</span>
+                    ) : (
+                      <span className="text-[9px] font-mono bg-safe/10 text-safe px-1.5 py-0.5 rounded uppercase font-bold">Stable</span>
+                    )}
                   </div>
-                  
-                  <div className="flex gap-1 flex-wrap justify-end max-w-[80px]">
+                  <div>
+                    <span className="font-mono text-3xl font-semibold text-ink">{entry.units}</span>
+                    <span className="text-muted text-xs ml-1 font-mono">units</span>
+                  </div>
+                  <div className="flex gap-1 flex-wrap">
                     {entry.batches.slice(0, 4).map((b) => (
-                      <div key={b.id} className="transition transform hover:scale-110">
-                        <ExpiryRing expiryDate={b.batch_expiry_date} size={28} />
-                      </div>
+                      <ExpiryRing key={b.id} expiryDate={b.batch_expiry_date} size={28} />
                     ))}
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+              );
+            })}
+          </div>
+        </section>
 
-      {/* Hospital Breakdown Component Section */}
-      <section className="space-y-4 pt-4">
-        <h2 className="font-display text-lg font-bold text-ink uppercase tracking-wide flex items-center gap-2">
-          🏥 Verified Facilities In {state}
-        </h2>
-        
-        <div className="grid gap-3">
-          {hospitals.map((h) => {
-            const hInventory = inventory.filter((i) => i.hospital_id === h.id);
-            const total = hInventory.reduce((sum, i) => sum + i.units_available, 0);
-            
-            return (
-              <div 
-                key={h.id} 
-                className="card p-5 rounded-xl flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all duration-200 hover:border-ink/20"
-              >
-                <div className="space-y-1">
-                  <p className="text-ink font-semibold text-lg tracking-tight">{h.name}</p>
-                  <p className="text-muted text-sm flex items-center gap-1">
-                    <span>📍</span> {h.address}
-                  </p>
-                </div>
-                
-                <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-ink/5">
-                  <div className="font-mono text-right">
-                    <span className="text-lg font-bold text-ink">{total} </span>
-                    <span className="text-xs text-muted font-bold">TOTAL UNITS</span>
+        {/* 4. HOSPITAL DIRECTORY LIST */}
+        <section className="space-y-4">
+          <h3 className="font-display text-lg text-ink uppercase tracking-wide">
+            Hospitals in {state}
+          </h3>
+          <div className="space-y-3">
+            {hospitals.map((h) => {
+              const hInventory = inventory.filter((i) => i.hospital_id === h.id);
+              const total = hInventory.reduce((sum, i) => sum + i.units_available, 0);
+              return (
+                <div key={h.id} className="card p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                  <div>
+                    <p className="text-ink font-medium">{h.name}</p>
+                    <p className="text-muted text-sm">📍 {h.address}</p>
                   </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <a
-                      href={whatsAppLink(h.emergency_phone, `Emergency blood inquiry via BloodLink for ${h.name}.`)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs font-mono font-bold px-4 py-2 rounded-lg border border-safe text-safe hover:bg-safe/5 active:scale-95 transition-all"
-                    >
-                      WhatsApp
-                    </a>
-                    <a
-                      href={`tel:${h.emergency_phone}`}
-                      className="text-xs font-mono font-bold px-4 py-2 rounded-lg bg-blood/10 border border-blood/20 text-blood hover:bg-blood hover:text-white active:scale-95 transition-all"
-                    >
-                      Call Dispatch
-                    </a>
+                  <div className="flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-2 md:pt-0 border-ink/5">
+                    <span className="font-mono text-xs text-muted">{total} units total</span>
+                    <div className="flex gap-2">
+                      <a
+                        href={whatsAppLink(h.emergency_phone, `Emergency blood inquiry via BloodLink for ${h.name}.`)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-mono px-3 py-1.5 rounded border border-safe text-safe hover:bg-safe/10 transition"
+                      >
+                        WhatsApp
+                      </a>
+                      <a
+                        href={`tel:${h.emergency_phone}`}
+                        className="text-xs font-mono px-3 py-1.5 rounded border border-blood text-blood hover:bg-blood/10 transition"
+                      >
+                        Call
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-          
-          {!loading && hospitals.length === 0 && (
-            <div className="text-center py-12 bg-surface/40 border hairline rounded-2xl">
-              <span className="text-2xl">⚡</span>
-              <p className="text-muted font-mono text-sm mt-2">No emergency nodes currently tracked in this state.</p>
-            </div>
-          )}
-        </div>
-      </section>
-    </main>
+              );
+            })}
+            {!loading && hospitals.length === 0 && (
+              <p className="text-muted text-sm font-mono">No registered facilities in this state node yet.</p>
+            )}
+          </div>
+        </section>
+
+      </div>
+    </div>
   );
 }
