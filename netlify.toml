@@ -4,4 +4,4 @@
 
 [build.environment]
   NEXT_PUBLIC_SUPABASE_URL = "https://sihitrehrqienbkceysf.supabase.co"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = sb_publishable_maQUCq_lWFyJxgn8JnDlGw_xr7fm3eF
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_maQUCq_lWFyJxgn8JnDlGw_xr7fm3eF"
