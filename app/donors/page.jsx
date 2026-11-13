@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import { BLOOD_TYPES, NIGERIAN_STATES, whatsAppLink } from "../../lib/utils";
+import { Select, BloodGroupPicker } from "../../components/fields";
 import { writeOrQueue } from "../../lib/offlineQueue";
 import { PageHeader, EmptyState } from "../../components/ui";
 import { ChatIcon, CheckCircleIcon, PinIcon, UsersIcon } from "../../components/Icons";
@@ -90,39 +91,27 @@ export default function Donors() {
                   Include the country code, starting with +234.
                 </p>
               </div>
-              <div>
-                <label htmlFor="blood_type" className="label">
+              <div className="sm:col-span-2">
+                <p id="blood_type_label" className="label">
                   Blood Group *
-                </label>
-                <select
+                </p>
+                <BloodGroupPicker
                   id="blood_type"
                   value={form.blood_type}
-                  onChange={(e) => setForm({ ...form, blood_type: e.target.value })}
-                  className="input"
-                >
-                  {BLOOD_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(v) => setForm({ ...form, blood_type: v })}
+                  labelledBy="blood_type_label"
+                />
               </div>
-              <div>
+              <div className="sm:col-span-2">
                 <label htmlFor="donor_state" className="label">
                   State *
                 </label>
-                <select
+                <Select
                   id="donor_state"
                   value={form.state}
-                  onChange={(e) => setForm({ ...form, state: e.target.value })}
-                  className="input"
-                >
-                  {NIGERIAN_STATES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(v) => setForm({ ...form, state: v })}
+                  options={NIGERIAN_STATES}
+                />
               </div>
               <div className="sm:col-span-2">
                 <label htmlFor="lga" className="label">
@@ -160,30 +149,18 @@ export default function Donors() {
             <p className="mt-2 text-sm text-muted">
               For hospital staff: choose a state and blood group, then message a donor on WhatsApp.
             </p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="mt-6 grid gap-4">
               <div>
                 <label htmlFor="find_state" className="label">
                   State
                 </label>
-                <select id="find_state" value={state} onChange={(e) => setState(e.target.value)} className="input">
-                  {NIGERIAN_STATES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
+                <Select id="find_state" value={state} onChange={setState} options={NIGERIAN_STATES} />
               </div>
               <div>
-                <label htmlFor="find_type" className="label">
+                <p id="find_type_label" className="label">
                   Blood Group
-                </label>
-                <select id="find_type" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="input">
-                  {BLOOD_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
+                </p>
+                <BloodGroupPicker id="find_type" value={typeFilter} onChange={setTypeFilter} labelledBy="find_type_label" />
               </div>
             </div>
 

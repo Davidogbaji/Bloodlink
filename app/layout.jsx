@@ -3,6 +3,7 @@ import { Inter, Source_Serif_4 } from "next/font/google";
 import ServiceWorkerRegister from "./ServiceWorkerRegister";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
+import { isDemo } from "../lib/supabaseClient";
 
 const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 const display = Source_Serif_4({
@@ -59,6 +60,11 @@ export default function RootLayout({ children }) {
           Skip to Content
         </a>
         <ServiceWorkerRegister />
+        {isDemo && (
+          <div role="status" className="bg-[#2A0710] px-4 py-2 text-center text-sm text-white">
+            Demo mode: showing sample hospitals and donors, not real stock.
+          </div>
+        )}
         <SiteHeader />
         <main id="main" className="flex-1">
           {children}

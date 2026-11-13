@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { supabase } from "../lib/supabaseClient";
 import { NIGERIAN_STATES, BLOOD_TYPES, whatsAppLink } from "../lib/utils";
-import ExpiryRing from "../components/ExpiryRing";
 import { StockBadge, EmptyState, SectionTitle, stockLevel } from "../components/ui";
+import { Select } from "../components/fields";
+import { BloodGrid, BloodGridSkeleton } from "../components/BloodGrid";
 import {
   ArrowRightIcon,
   ChatIcon,
@@ -145,63 +146,15 @@ export default function PublicBoard() {
               <label htmlFor="state" className="label">
                 State
               </label>
-              <select id="state" value={state} onChange={(e) => setState(e.target.value)} className="input">
-                {NIGERIAN_STATES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
+              <Select id="state" value={state} onChange={setState} options={NIGERIAN_STATES} />
             </div>
           </div>
 
           <div className="mt-10" aria-live="polite" aria-busy={loading}>
             {loading ? (
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {ORDERED_TYPES.map((t) => (
-                  <div key={t} className="card p-5">
-                    <div className="skeleton h-6 w-12" />
-                    <div className="skeleton mt-6 h-9 w-20" />
-                    <div className="skeleton mt-4 h-5 w-24" />
-                  </div>
-                ))}
-              </div>
+              <BloodGridSkeleton count={ORDERED_TYPES.length} />
             ) : hasStock ? (
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {ORDERED_TYPES.map((type) => {
-                  const entry = byType[type];
-                  const level = stockLevel(entry.units);
-                  return (
-                    <article
-                      key={type}
-                      className={`card flex flex-col gap-4 p-5 ${
-                        level === "out" ? "border-blood/40 bg-blood-bg/40" : level === "low" ? "border-amber/60" : ""
-                      }`}
-                    >
-                      <div className="flex flex-col items-start gap-2 sm:flex-row sm:justify-between">
-                        <h3 className="font-display text-2xl font-semibold">{type}</h3>
-                        <StockBadge units={entry.units} />
-                      </div>
-                      <p>
-                        <span className="font-display text-4xl font-semibold tabular-nums text-ink">{entry.units}</span>
-                        <span className="ml-1.5 text-sm text-muted">{entry.units === 1 ? "unit" : "units"}</span>
-                      </p>
-                      {entry.batches.length > 0 ? (
-                        <div className="flex flex-wrap gap-1.5">
-                          {entry.batches.slice(0, 4).map((b) => (
-                            <ExpiryRing key={b.id} expiryDate={b.batch_expiry_date} size={32} />
-                          ))}
-                          {entry.batches.length > 4 && (
-                            <span className="self-center text-xs text-muted">+{entry.batches.length - 4} more</span>
-                          )}
-                        </div>
-                      ) : (
-                        <p className="text-xs text-muted">No batches reported.</p>
-                      )}
-                    </article>
-                  );
-                })}
-              </div>
+              <BloodGrid types={ORDERED_TYPES} byType={byType} />
             ) : (
               <EmptyState
                 icon={DropIcon}

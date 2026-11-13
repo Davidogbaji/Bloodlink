@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { BLOOD_TYPES, COLD_CHAIN_RISK_HOURS, expiryStatus, outageRisk } from "../../lib/utils";
+import { Select, BloodGroupPicker, DatePicker } from "../../components/fields";
 import { writeOrQueue, getQueueLength, flushQueue } from "../../lib/offlineQueue";
 import ExpiryRing from "../../components/ExpiryRing";
 import { PageHeader, ExpiryBadge, EmptyState } from "../../components/ui";
@@ -158,20 +159,14 @@ export default function Dashboard() {
               <label htmlFor="hospital" className="label">
                 Hospital
               </label>
-              <select
+              <Select
                 id="hospital"
                 value={hospitalId}
-                onChange={(e) => setHospitalId(e.target.value)}
-                className="input"
+                onChange={setHospitalId}
                 disabled={hospitals.length === 0}
-              >
-                {hospitals.length === 0 && <option value="">No hospitals registered yet</option>}
-                {hospitals.map((h) => (
-                  <option key={h.id} value={h.id}>
-                    {h.name}
-                  </option>
-                ))}
-              </select>
+                placeholder={hospitals.length === 0 ? "No hospitals registered yet" : "Choose a hospital"}
+                options={hospitals.map((h) => ({ value: h.id, label: h.name, description: h.address }))}
+              />
               {hospital && (
                 <p className="hint">
                   {hospital.address}
@@ -239,24 +234,18 @@ export default function Dashboard() {
                 Add a Batch
               </h2>
               <form onSubmit={addBatch} className="mt-5 grid gap-4 sm:grid-cols-2" noValidate>
-                <div>
-                  <label htmlFor="blood_type" className="label">
+                <div className="sm:col-span-2">
+                  <p id="blood_type_label" className="label">
                     Blood Group
-                  </label>
-                  <select
+                  </p>
+                  <BloodGroupPicker
                     id="blood_type"
                     value={form.blood_type}
-                    onChange={(e) => setForm({ ...form, blood_type: e.target.value })}
-                    className="input"
-                  >
-                    {BLOOD_TYPES.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(v) => setForm({ ...form, blood_type: v })}
+                    labelledBy="blood_type_label"
+                  />
                 </div>
-                <div>
+                <div className="sm:col-span-2">
                   <label htmlFor="units" className="label">
                     Units
                   </label>
@@ -274,14 +263,20 @@ export default function Dashboard() {
                   <label htmlFor="expiry" className="label">
                     Batch Expiry Date
                   </label>
-                  <input
+                  <DatePicker
                     id="expiry"
-                    type="date"
                     value={form.batch_expiry_date}
-                    onChange={(e) => setForm({ ...form, batch_expiry_date: e.target.value })}
-                    className="input"
-                    aria-invalid={Boolean(formError)}
-                    aria-describedby={formError ? "expiry-error" : "expiry-hint"}
+                    onChange={(v) => setForm({ ...form, batch_expiry_date: v })}
+                    min={new Date().toISOString().slice(0, 10)}
+                    placeholder="Pick the expiry date"
+                    quickPicks={[
+                      { label: "In 7 days", days: 7 },
+                      { label: "In 21 days", days: 21 },
+                      { label: "In 35 days", days: 35 },
+                      { label: "In 42 days", days: 42 },
+                    ]}
+                    invalid={Boolean(formError)}
+                    describedBy={formError ? "expiry-error" : "expiry-hint"}
                   />
                   {formError ? (
                     <p id="expiry-error" className="mt-1.5 text-xs font-medium text-blood">
