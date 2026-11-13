@@ -1,4 +1,4 @@
-const CACHE_NAME = "bloodlink-shell-v1";
+const CACHE_NAME = "bloodlink-shell-v2";
 const SHELL_ASSETS = ["/", "/manifest.json"];
 
 self.addEventListener("install", (event) => {

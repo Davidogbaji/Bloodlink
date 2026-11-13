@@ -1,9 +1,10 @@
 {
   "name": "BloodLink ColdChain",
   "short_name": "BloodLink",
+  "description": "Live blood stock for hospitals in Nasarawa State.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0A1628",
-  "theme_color": "#0A1628",
-  "icons": []
+  "background_color": "#FFFFFF",
+  "theme_color": "#2A0710",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
 }

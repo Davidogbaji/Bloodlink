@@ -1,51 +1,57 @@
 import { expiryStatus } from "../lib/utils";
 
 const COLOR_MAP = {
-  safe: "#2BB673",
-  warning: "#F0A93A",
-  critical: "#E4362E",
-  expired: "#7A2620",
+  safe: "#2E7D5B",
+  warning: "#E0A030",
+  critical: "#C8102E",
+  expired: "#5A0F1E",
 };
 
-// A heartbeat-monitor-style radial ring: sweep fraction = days left / 42
-// (max shelf life), color-coded. This is the page's signature visual —
-// staff can scan a room of cards and read risk from color/fill alone.
+export const EXPIRY_LABEL = {
+  safe: "Safe",
+  warning: "Use Soon",
+  critical: "Critical",
+  expired: "Expired",
+};
+
+// Radial shelf-life ring: sweep = days left / 42 (maximum shelf life).
+// The number of days is printed inside and the level is exposed as an
+// accessible label, so the ring never relies on colour alone.
 export default function ExpiryRing({ expiryDate, size = 64, label }) {
   const { daysLeft, level } = expiryStatus(expiryDate);
   const fraction = Math.max(0, Math.min(1, daysLeft / 42));
-  const radius = size / 2 - 5;
+  const stroke = size >= 40 ? 4 : 3;
+  const radius = size / 2 - stroke - 1;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - fraction);
   const color = COLOR_MAP[level];
+  const days = level === "expired" ? 0 : daysLeft;
 
   return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="expiry-ring">
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="#24344D"
-          strokeWidth="4"
-        />
+    <div
+      className="relative inline-flex shrink-0 items-center justify-center"
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label={`${EXPIRY_LABEL[level]}: ${days} day${days === 1 ? "" : "s"} of shelf life left`}
+      title={`${EXPIRY_LABEL[level]} · ${days} day${days === 1 ? "" : "s"} left`}
+    >
+      <svg width={size} height={size} className="expiry-ring" aria-hidden>
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#E7DFE0" strokeWidth={stroke} />
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
           stroke={color}
-          strokeWidth="4"
+          strokeWidth={stroke}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
         />
       </svg>
       <div className="absolute flex flex-col items-center justify-center leading-none">
-        <span className="font-mono text-[11px] font-medium" style={{ color }}>
-          {level === "expired" ? "0" : daysLeft}
-        </span>
-        {label && <span className="text-[8px] text-muted mt-0.5">{label}</span>}
+        <span className={`font-semibold tabular-nums text-ink ${size >= 40 ? "text-xs" : "text-[10px]"}`}>{days}</span>
+        {label && <span className="mt-0.5 text-[9px] text-muted">{label}</span>}
       </div>
     </div>
   );

@@ -1,41 +1,47 @@
 /** @type {import('tailwindcss').Config} */
+// Palette shared with the pitch deck. Text pairings used on the site:
+//   ink #1C1517 on white/mist        > 15:1
+//   muted #6B6164 on white / mist    5.9:1 / 5.4:1
+//   blood #C8102E on white           5.9:1   (white on blood: 5.9:1)
+//   safe-text #23654A on white       7.0:1
+//   warn-text #8A5300 on white       6.3:1   (amber itself is a fill, never text on white)
+//   white / rose on night #2A0710    > 15:1 / 11:1
 module.exports = {
-  content: [
-    "./app/**/*.{js,jsx}",
-    "./components/**/*.{js,jsx}",
-  ],
+  content: ["./app/**/*.{js,jsx}", "./components/**/*.{js,jsx}"],
   theme: {
     extend: {
       colors: {
-        bg: "#0A1628",
-        surface: "#101F35",
-        surface2: "#152743",
-        line: "#24344D",
-        ink: "#E8EDF4",
-        muted: "#8CA0BC",
-        blood: "#E4362E",
-        "blood-dim": "#7A2620",
-        safe: "#2BB673",
-        warn: "#F0A93A",
+        night: "#2A0710",
+        burgundy: "#5A0F1E",
+        plum: "#43101B",
+        blood: "#C8102E",
+        "blood-dark": "#A00C24",
+        amber: "#E0A030",
+        "warn-text": "#8A5300",
+        "warn-bg": "#FDF3E1",
+        safe: "#2E7D5B",
+        "safe-text": "#23654A",
+        "safe-bg": "#E8F3EE",
+        "blood-bg": "#FBEAED",
+        ink: "#1C1517",
+        muted: "#6B6164",
+        mist: "#F6F2F2",
+        line: "#E7DFE0",
+        rose: "#E9CDD2",
       },
       fontFamily: {
-        display: ["var(--font-display)", "sans-serif"],
-        body: ["var(--font-body)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
+        display: ["var(--font-display)", "Georgia", "serif"],
+        body: ["var(--font-body)", "system-ui", "sans-serif"],
       },
-      boxShadow: {
-        pulse: "0 0 0 0 rgba(228,54,46,0.6)",
-      },
+      maxWidth: { page: "72rem" },
       keyframes: {
         "pulse-ring": {
-          "0%": { boxShadow: "0 0 0 0 rgba(228,54,46,0.55)" },
-          "70%": { boxShadow: "0 0 0 14px rgba(228,54,46,0)" },
-          "100%": { boxShadow: "0 0 0 0 rgba(228,54,46,0)" },
+          "0%": { boxShadow: "0 0 0 0 rgba(200,16,46,0.45)" },
+          "70%": { boxShadow: "0 0 0 10px rgba(200,16,46,0)" },
+          "100%": { boxShadow: "0 0 0 0 rgba(200,16,46,0)" },
         },
       },
-      animation: {
-        "pulse-ring": "pulse-ring 2.2s cubic-bezier(0.4,0,0.6,1) infinite",
-      },
+      animation: { "pulse-ring": "pulse-ring 2.2s cubic-bezier(0.4,0,0.6,1) infinite" },
     },
   },
   plugins: [],
