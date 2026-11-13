@@ -33,7 +33,7 @@ export function stockLevel(units) {
 export function StockBadge({ units }) {
   const s = STOCK[stockLevel(units)];
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${s.cls}`}>
+    <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${s.cls}`}>
       <s.Icon className="h-3.5 w-3.5" />
       {s.label}
     </span>
@@ -50,7 +50,7 @@ const EXPIRY = {
 export function ExpiryBadge({ level }) {
   const s = EXPIRY[level] || EXPIRY.safe;
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${s.cls}`}>
+    <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${s.cls}`}>
       <s.Icon className="h-3.5 w-3.5" />
       {s.label}
     </span>

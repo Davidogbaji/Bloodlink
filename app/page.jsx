@@ -178,7 +178,7 @@ export default function PublicBoard() {
                         level === "out" ? "border-blood/40 bg-blood-bg/40" : level === "low" ? "border-amber/60" : ""
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex flex-col items-start gap-2 sm:flex-row sm:justify-between">
                         <h3 className="font-display text-2xl font-semibold">{type}</h3>
                         <StockBadge units={entry.units} />
                       </div>
@@ -256,8 +256,13 @@ export default function PublicBoard() {
                             <PinIcon className="h-4 w-4 shrink-0" />
                             {h.address}
                           </p>
+                          <div className="mt-3 sm:hidden">
+                            <StockBadge units={total} />
+                          </div>
                         </div>
-                        <StockBadge units={total} />
+                        <div className="hidden shrink-0 sm:block">
+                          <StockBadge units={total} />
+                        </div>
                       </div>
                       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
                         <p className="text-sm text-muted">
