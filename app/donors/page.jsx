@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import { BLOOD_TYPES, NIGERIAN_STATES, whatsAppLink } from "../../lib/utils";
 import { writeOrQueue } from "../../lib/offlineQueue";
+import { PageHeader, EmptyState } from "../../components/ui";
+import { ChatIcon, CheckCircleIcon, PinIcon, UsersIcon } from "../../components/Icons";
 
 export default function Donors() {
   const [donors, setDonors] = useState([]);
@@ -27,78 +30,203 @@ export default function Donors() {
   const filtered = donors.filter((d) => d.blood_type === typeFilter && d.whatsapp_opt_in);
 
   return (
-    <main className="min-h-screen px-5 py-8 md:px-10 md:py-12 max-w-4xl mx-auto">
-      <header className="border-b hairline pb-6 mb-8">
-        <p className="font-mono text-xs tracking-widest text-safe uppercase mb-2">Community Network</p>
-        <h1 className="font-display text-3xl font-semibold text-ink">Donor Registry</h1>
-        <p className="text-muted mt-2">
-          Register once. When a hospital in your state posts a shortage, staff can reach you directly
-          on WhatsApp — no calls, no middlemen, no cost to you.
-        </p>
-      </header>
+    <>
+      <PageHeader eyebrow="Community Network" title="Donor Registry">
+        Register once. When a hospital in your state runs short of your blood group, its staff can message you
+        directly on WhatsApp. It is free, and there is no middleman.
+      </PageHeader>
 
-      {/* Registration */}
-      <section className="card p-5 mb-10">
-        <h2 className="font-display text-lg text-ink mb-4">Become a donor</h2>
-        {submitted ? (
-          <p className="text-safe text-sm font-mono">Registered — thank you. You can add another below.</p>
-        ) : null}
-        <form onSubmit={register} className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <input placeholder="Full name" value={form.full_name}
-            onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-            className="bg-surface2 border hairline rounded px-3 py-2 text-ink" required />
-          <input placeholder="Phone (WhatsApp), e.g. +2348012345678" value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="bg-surface2 border hairline rounded px-3 py-2 text-ink" required />
-          <select value={form.blood_type} onChange={(e) => setForm({ ...form, blood_type: e.target.value })}
-            className="bg-surface2 border hairline rounded px-3 py-2 text-ink">
-            {BLOOD_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-          <select value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })}
-            className="bg-surface2 border hairline rounded px-3 py-2 text-ink">
-            {NIGERIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-          <input placeholder="LGA (optional)" value={form.lga}
-            onChange={(e) => setForm({ ...form, lga: e.target.value })}
-            className="bg-surface2 border hairline rounded px-3 py-2 text-ink md:col-span-2" />
-          <button type="submit" className="bg-safe text-bg font-mono text-sm px-4 py-2 rounded md:col-span-2 font-medium">
-            Register as donor
-          </button>
-        </form>
-      </section>
+      <div className="page grid gap-8 py-10 md:py-14 lg:grid-cols-12">
+        {/* Registration */}
+        <section id="register" className="scroll-mt-24 lg:col-span-6" aria-labelledby="register-title">
+          <div className="card p-6 sm:p-8">
+            <h2 id="register-title" className="text-2xl font-semibold">
+              Register as a Donor
+            </h2>
+            <p className="mt-2 text-sm text-muted">Takes about a minute. Fields marked * are required.</p>
 
-      {/* Mobilize */}
-      <section>
-        <div className="flex items-center gap-3 mb-4">
-          <h2 className="font-display text-lg text-ink">Mobilize donors</h2>
-          <select value={state} onChange={(e) => setState(e.target.value)}
-            className="bg-surface border hairline rounded px-2 py-1 text-sm text-ink">
-            {NIGERIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-          <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}
-            className="bg-surface border hairline rounded px-2 py-1 text-sm text-ink">
-            {BLOOD_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </div>
-        <div className="space-y-2">
-          {filtered.map((d) => (
-            <div key={d.id} className="card p-3 flex items-center justify-between">
-              <div>
-                <p className="text-ink text-sm">{d.full_name} <span className="text-muted font-mono">· {d.blood_type}</span></p>
-                <p className="text-xs text-muted">{d.lga ? `${d.lga}, ` : ""}{d.state}</p>
+            {submitted && (
+              <div role="status" className="mt-5 flex items-start gap-3 rounded-xl bg-safe-bg p-4 text-sm text-safe-text">
+                <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0" />
+                <p>
+                  <span className="font-semibold">Thank you, you are registered.</span> A hospital may contact you on
+                  WhatsApp when your blood group is needed. You can register another person below.
+                </p>
               </div>
-              <a
-                href={whatsAppLink(d.phone, `Hi ${d.full_name}, this is a hospital in ${d.state} on BloodLink. We're short on ${d.blood_type} blood — would you be able to donate today?`)}
-                target="_blank" rel="noreferrer"
-                className="text-xs font-mono px-3 py-1.5 rounded border border-safe text-safe hover:bg-safe/10 transition"
-              >
-                Notify on WhatsApp
-              </a>
+            )}
+
+            <form onSubmit={register} className="mt-6 grid gap-5 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label htmlFor="full_name" className="label">
+                  Full Name *
+                </label>
+                <input
+                  id="full_name"
+                  autoComplete="name"
+                  placeholder="e.g. Amina Yusuf"
+                  value={form.full_name}
+                  onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+                  className="input"
+                  required
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="phone" className="label">
+                  WhatsApp Number *
+                </label>
+                <input
+                  id="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  placeholder="+234 801 234 5678"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  className="input"
+                  aria-describedby="phone-hint"
+                  required
+                />
+                <p id="phone-hint" className="hint">
+                  Include the country code, starting with +234.
+                </p>
+              </div>
+              <div>
+                <label htmlFor="blood_type" className="label">
+                  Blood Group *
+                </label>
+                <select
+                  id="blood_type"
+                  value={form.blood_type}
+                  onChange={(e) => setForm({ ...form, blood_type: e.target.value })}
+                  className="input"
+                >
+                  {BLOOD_TYPES.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="donor_state" className="label">
+                  State *
+                </label>
+                <select
+                  id="donor_state"
+                  value={form.state}
+                  onChange={(e) => setForm({ ...form, state: e.target.value })}
+                  className="input"
+                >
+                  {NIGERIAN_STATES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="lga" className="label">
+                  Local Government Area <span className="font-normal text-muted">(optional)</span>
+                </label>
+                <input
+                  id="lga"
+                  placeholder="e.g. Lafia"
+                  value={form.lga}
+                  onChange={(e) => setForm({ ...form, lga: e.target.value })}
+                  className="input"
+                />
+              </div>
+              <p className="text-xs leading-relaxed text-muted sm:col-span-2">
+                By registering, you agree that hospitals using BloodLink may contact you on WhatsApp about blood
+                donation. Read our{" "}
+                <Link href="/privacy" className="font-medium text-blood underline underline-offset-2">
+                  Privacy Notice
+                </Link>
+                .
+              </p>
+              <button type="submit" className="btn-primary sm:col-span-2">
+                Register as a Donor
+              </button>
+            </form>
+          </div>
+        </section>
+
+        {/* Find donors */}
+        <section className="lg:col-span-6" aria-labelledby="find-title">
+          <div className="panel p-6 sm:p-8">
+            <h2 id="find-title" className="text-2xl font-semibold">
+              Find Donors
+            </h2>
+            <p className="mt-2 text-sm text-muted">
+              For hospital staff: choose a state and blood group, then message a donor on WhatsApp.
+            </p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div>
+                <label htmlFor="find_state" className="label">
+                  State
+                </label>
+                <select id="find_state" value={state} onChange={(e) => setState(e.target.value)} className="input">
+                  {NIGERIAN_STATES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="find_type" className="label">
+                  Blood Group
+                </label>
+                <select id="find_type" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="input">
+                  {BLOOD_TYPES.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-          ))}
-          {filtered.length === 0 && <p className="text-muted text-sm">No {typeFilter} donors registered in {state} yet.</p>}
-        </div>
-      </section>
-    </main>
+
+            <div className="mt-6 space-y-3">
+              {filtered.map((d) => (
+                <article key={d.id} className="card flex flex-wrap items-center justify-between gap-3 p-4">
+                  <div className="min-w-0">
+                    <p className="font-medium text-ink">
+                      {d.full_name}{" "}
+                      <span className="ml-1 rounded-md bg-blood-bg px-1.5 py-0.5 text-xs font-semibold text-blood">
+                        {d.blood_type}
+                      </span>
+                    </p>
+                    <p className="mt-1 flex items-center gap-1 text-sm text-muted">
+                      <PinIcon className="h-3.5 w-3.5" />
+                      {d.lga ? `${d.lga}, ` : ""}
+                      {d.state}
+                    </p>
+                  </div>
+                  <a
+                    href={whatsAppLink(
+                      d.phone,
+                      `Hello ${d.full_name}, this is a hospital in ${d.state} using BloodLink. We are short of ${d.blood_type} blood. Would you be able to donate today?`,
+                    )}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-outline btn-sm"
+                  >
+                    <ChatIcon className="h-4 w-4 text-safe" />
+                    Message on WhatsApp
+                  </a>
+                </article>
+              ))}
+              {filtered.length === 0 && (
+                <EmptyState icon={UsersIcon} title={`No ${typeFilter} Donors in ${state === "FCT" ? "the FCT" : state} Yet`}>
+                  As donors register, they will appear here. Share the registration link with donor groups in your
+                  area.
+                </EmptyState>
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }
